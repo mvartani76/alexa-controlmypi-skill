@@ -1,0 +1,198 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "control my pi",
+            "intents": [
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "SetGPIODirectionIntent",
+                    "slots": [
+                        {
+                            "name": "number",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "pinDirection",
+                            "type": "PinDirection"
+                        }
+                    ],
+                    "samples": [
+                        "Configure direction of pin {number} to {pinDirection}",
+                        "Set direction of pin {number} to {pinDirection}",
+                        "Configure direction of GPIO {number} to {pinDirection}",
+                        "Set direction of GPIO {number} to {pinDirection}"
+                    ]
+                },
+                {
+                    "name": "SetGPIOLevelIntent",
+                    "slots": [
+                        {
+                            "name": "number",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "pinLevel",
+                            "type": "PinLevel"
+                        }
+                    ],
+                    "samples": [
+                        "Set GPIO {number} to {pinLevel}",
+                        "Set pin {number} to {pinLevel}"
+                    ]
+                },
+                {
+                    "name": "ConfigureGPIOsIntent",
+                    "slots": [],
+                    "samples": [
+                        "Map board",
+                        "Configure board"
+                    ]
+                },
+                {
+                    "name": "ReadGPIOLevelIntent",
+                    "slots": [
+                        {
+                            "name": "number",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "what is GPIO {number} set to",
+                        "what is the level of GPIO {number}",
+                        "what is pin {number} set to",
+                        "what is the level of pin {number}"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "PinDirection",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "Output"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Input"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "PinLevel",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "Low"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "High"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "BoardType",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "Raspberry Pi 1 Model A+",
+                                "synonyms": [
+                                    "Raspberry Pi 1 Model A Plus"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pi 1 Model B+",
+                                "synonyms": [
+                                    "Raspberry Pi 1 Model B Plus"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pi 1 Model A"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pi 1 Model B"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pi 2 Model B",
+                                "synonyms": [
+                                    "Raspberry Pi 2"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pi Zero"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pi Zero W"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pi 3 Model B"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pi 3 Model A+",
+                                "synonyms": [
+                                    "Raspberry Pi 3 Model A Plus"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pi 3 Model B+",
+                                "synonyms": [
+                                    "Raspberry Pi 3 Model B Plus"
+                                ]
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pi 4 Model B",
+                                "synonyms": [
+                                    "Raspberry Pi 4"
+                                ]
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
