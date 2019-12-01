@@ -3,6 +3,8 @@ const Alexa = require('ask-sdk-core');
 const ddbAdapter = require('ask-sdk-dynamodb-persistence-adapter');
 const ddbTableName = 'controlmypi-alexa-user-table';
 
+var iotdata = new AWS.IotData({endpoint:process.env.AWS_IOT_ENDPOINT});
+
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
       //console.log(handlerInput.requestEnvelope);
@@ -58,6 +60,22 @@ const SetGPIOLevelIntentHandler = {
     async handle(handlerInput) {
         const speakOutput = 'You have triggered the Set GPIO Level Intent.';
         const repromptOutput = 'What would you like to do?';
+
+        var params = {
+			topic: 'topic_1',
+			payload: 'blah',
+			qos: 0
+		};
+
+		iotdata.publish(params, function(err, data){
+			if(err){
+				console.log("Error occured : ",err)
+			}
+			else{
+				console.log("success.....");
+			}
+		});
+
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(repromptOutput)
