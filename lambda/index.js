@@ -20,6 +20,66 @@ const LaunchRequestHandler = {
     }
 };
 
+const ConfigureBoardIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'ConfigureBoardIntent';
+    },
+    async handle(handlerInput) {
+        const speakOutput = 'You have triggered the Configure Board Intent.';
+        const repromptOutput = 'What would you like to do?';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(repromptOutput)
+            .getResponse();
+    }
+};
+
+const SetGPIODirectionIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'SetGPIODirectionIntent';
+    },
+    async handle(handlerInput) {
+        const speakOutput = 'You have triggered the Set GPIO Direction Intent.';
+        const repromptOutput = 'What would you like to do?';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(repromptOutput)
+            .getResponse();
+    }
+};
+
+const SetGPIOLevelIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'SetGPIOLevelIntent';
+    },
+    async handle(handlerInput) {
+        const speakOutput = 'You have triggered the Set GPIO Level Intent.';
+        const repromptOutput = 'What would you like to do?';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(repromptOutput)
+            .getResponse();
+    }
+};
+
+const ReadGPIOLevelIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'ReadGPIOLevelIntent';
+    },
+    async handle(handlerInput) {
+        const speakOutput = 'You have triggered the Read GPIO Level Intent.';
+        const repromptOutput = 'What would you like to do?';
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(repromptOutput)
+            .getResponse();
+    }
+};
+
 const HelpIntentHandler = {
     canHandle(handlerInput) {
         return Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest'
@@ -164,6 +224,10 @@ exports.handler = Alexa.SkillBuilders.custom()
     .withApiClient(new Alexa.DefaultApiClient())
     .addRequestHandlers(
         LaunchRequestHandler,
+        ConfigureBoardIntentHandler,
+        SetGPIODirectionIntentHandler,
+        SetGPIOLevelIntentHandler,
+        ReadGPIOLevelIntentHandler,
         YesIntentHandler,
         NoIntentHandler,
         HelpIntentHandler,
