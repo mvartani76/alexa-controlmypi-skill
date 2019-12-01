@@ -60,7 +60,7 @@
                     ]
                 },
                 {
-                    "name": "ConfigureGPIOsIntent",
+                    "name": "ConfigureBoardIntent",
                     "slots": [],
                     "samples": [
                         "Map board",
