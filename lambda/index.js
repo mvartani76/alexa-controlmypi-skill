@@ -61,20 +61,7 @@ const SetGPIOLevelIntentHandler = {
         const speakOutput = 'You have triggered the Set GPIO Level Intent.';
         const repromptOutput = 'What would you like to do?';
 
-        var params = {
-			topic: 'topic_1',
-			payload: 'blah',
-			qos: 0
-		};
-
-		iotdata.publish(params, function(err, data){
-			if(err){
-				console.log("Error occured : ",err)
-			}
-			else{
-				console.log("success.....");
-			}
-		});
+        publishMQTTmsg(iotdata, "topic_1", "blah", 0);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -233,6 +220,24 @@ function getPersistenceAdapter(tableName) {
         createTable: true,
     });
 }
+
+function publishMQTTmsg(iotdataobj, topic, payload, qos) {
+	var params = {
+			topic: topic,
+			payload: payload,
+			qos: qos
+		};
+
+	iotdataobj.publish(params, function(err, data){
+		if(err){
+			console.log("Error occured : ",err)
+		}
+		else{
+			console.log("success.....");
+		}
+	});
+}
+
 
 // The SkillBuilder acts as the entry point for your skill, routing all request and response
 // payloads to the handlers above. Make sure any new handlers or interceptors you've
