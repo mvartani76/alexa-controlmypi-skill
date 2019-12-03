@@ -45,6 +45,14 @@ const SetGPIODirectionIntentHandler = {
     async handle(handlerInput) {
         const speakOutput = 'You have triggered the Set GPIO Direction Intent.';
         const repromptOutput = 'What would you like to do?';
+
+        // Retrieve pin and direction values from slots
+        let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
+        let pinDirection = handlerInput.requestEnvelope.request.intent.slots.direction.value;
+        let topic = "controlmypi/setgpiodirection/" + pin;
+
+        publishMQTTmsg(iotdata, topic, pinDirection, 0);
+
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(repromptOutput)
@@ -61,7 +69,12 @@ const SetGPIOLevelIntentHandler = {
         const speakOutput = 'You have triggered the Set GPIO Level Intent.';
         const repromptOutput = 'What would you like to do?';
 
-        publishMQTTmsg(iotdata, "topic_1", "blah", 0);
+        // Retrieve pin and pin level values from slots
+        let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
+        let pinLevel = handlerInput.requestEnvelope.request.intent.slots.pinLevel.value;
+        let topic = "controlmypi/setgpiolevel/" + pin;
+
+        publishMQTTmsg(iotdata, topic, pinLevel, 0);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -78,6 +91,14 @@ const ReadGPIOLevelIntentHandler = {
     async handle(handlerInput) {
         const speakOutput = 'You have triggered the Read GPIO Level Intent.';
         const repromptOutput = 'What would you like to do?';
+
+        // Retrieve pin and level values from slots
+        let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
+        let pinLevel = handlerInput.requestEnvelope.request.intent.slots.pinLevel.value;
+        let topic = "controlmypi/readgpiolevel/" + pin;
+
+        publishMQTTmsg(iotdata, topic, pinLevel, 0);
+
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(repromptOutput)
