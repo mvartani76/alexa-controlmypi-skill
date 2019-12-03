@@ -1,7 +1,7 @@
 {
     "interactionModel": {
         "languageModel": {
-            "invocationName": "control my pi",
+            "invocationName": "control my pie",
             "intents": [
                 {
                     "name": "AMAZON.FallbackIntent",
@@ -33,13 +33,15 @@
                         {
                             "name": "pinDirection",
                             "type": "PinDirection"
+                        },
+                        {
+                            "name": "gpio",
+                            "type": "GPIONames"
                         }
                     ],
                     "samples": [
-                        "Configure direction of pin {number} to {pinDirection}",
-                        "Set direction of pin {number} to {pinDirection}",
-                        "Configure direction of GPIO {number} to {pinDirection}",
-                        "Set direction of GPIO {number} to {pinDirection}"
+                        "Configure direction of {gpio} {number} to {pinDirection}",
+                        "Set direction of {gpio} {number} to {pinDirection}"
                     ]
                 },
                 {
@@ -52,11 +54,14 @@
                         {
                             "name": "pinLevel",
                             "type": "PinLevel"
+                        },
+                        {
+                            "name": "gpio",
+                            "type": "GPIONames"
                         }
                     ],
                     "samples": [
-                        "Set GPIO {number} to {pinLevel}",
-                        "Set pin {number} to {pinLevel}"
+                        "Set {gpio} {number} to {pinLevel}"
                     ]
                 },
                 {
@@ -73,13 +78,15 @@
                         {
                             "name": "number",
                             "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "gpio",
+                            "type": "GPIONames"
                         }
                     ],
                     "samples": [
-                        "what is GPIO {number} set to",
-                        "what is the level of GPIO {number}",
-                        "what is pin {number} set to",
-                        "what is the level of pin {number}"
+                        "what is {gpio} {number} set to",
+                        "what is the level of {gpio} {number}"
                     ]
                 }
             ],
@@ -188,6 +195,21 @@
                                 "synonyms": [
                                     "Raspberry Pi 4"
                                 ]
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "GPIONames",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "g.p.i.o."
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "pin"
                             }
                         }
                     ]
