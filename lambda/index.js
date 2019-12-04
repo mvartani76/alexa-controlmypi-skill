@@ -92,12 +92,37 @@ const ReadGPIOLevelIntentHandler = {
         const speakOutput = 'You have triggered the Read GPIO Level Intent.';
         const repromptOutput = 'What would you like to do?';
 
-        // Retrieve pin and level values from slots
+        // Retrieve pin value from slots
         let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
-        let pinLevel = handlerInput.requestEnvelope.request.intent.slots.pinLevel.value;
+
         let topic = "controlmypi/readgpiolevel/" + pin;
 
-        publishMQTTmsg(iotdata, topic, pinLevel, 0);
+        // Send message to pi to send the requested data back
+        publishMQTTmsg(iotdata, topic, pin, 0);
+
+        return handlerInput.responseBuilder
+            .speak(speakOutput)
+            .reprompt(repromptOutput)
+            .getResponse();
+    }
+};
+
+const ReadGPIODirectionIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'ReadGPIODirectionIntent';
+    },
+    async handle(handlerInput) {
+        const speakOutput = 'You have triggered the Read GPIO Direction Intent.';
+        const repromptOutput = 'What would you like to do?';
+
+        // Retrieve pin value from slots
+        let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
+
+        let topic = "controlmypi/readgpiodirection/" + pin;
+
+        // Send message to pi to send the requested data back
+        publishMQTTmsg(iotdata, topic, pin, 0);
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -272,6 +297,7 @@ exports.handler = Alexa.SkillBuilders.custom()
         SetGPIODirectionIntentHandler,
         SetGPIOLevelIntentHandler,
         ReadGPIOLevelIntentHandler,
+        ReadGPIODirectionIntentHandler,
         YesIntentHandler,
         NoIntentHandler,
         HelpIntentHandler,
