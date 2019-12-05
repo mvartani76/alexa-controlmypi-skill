@@ -19,10 +19,8 @@ import time
 import argparse
 import json
 import sys
-import oled
 import subprocess
 import os
-import dotenv
 import socket
 
 # get the hostname
