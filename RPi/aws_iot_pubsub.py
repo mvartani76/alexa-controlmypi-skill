@@ -19,7 +19,6 @@ import time
 import argparse
 import json
 import sys
-import scanutil
 import oled
 import subprocess
 import os
