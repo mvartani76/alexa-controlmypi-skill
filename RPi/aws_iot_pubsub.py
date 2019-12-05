@@ -27,16 +27,28 @@ import socket
 hostname = os.uname()[1]
 
 # Set the clientId to hostname
-clientId = hostname
+clientId = "controlmypi"
 
 # Set the code version
-aws_iot_code_version = "1.21"
+aws_iot_code_version = "1.1"
 
 # Custom MQTT message callback
 def sub_callback(client, userdata, message):
-	# convert message.payload to json object
-	print(message.payload)
-	
+
+	# The topic contains command and pin so we need to split out
+	split_topic = message.topic.split('/')
+	command = split_topic[1]
+	pin = split_topic[2]
+
+	if command == "setgpiolevel":
+		print("Setting pin " + pin + " level to " + message.payload)
+	elif command == "setgpiodirection":
+		print("Setting pin " + pin + " direction to " + message.payload)
+	elif command == "readgpiolevel":
+		print("Reading pin " + pin + " level")
+	elif command == "readgpiodirection":
+		print("Reading pin " + pin + " direction")
+
 # Custom MQTT Puback callback
 def customPubackCallback(mid):
     print("Received PUBACK packet id: ")
@@ -53,7 +65,7 @@ parser.add_argument("-p", "--port", action="store", dest="port", type=int, help=
 parser.add_argument("-w", "--websocket", action="store_true", dest="useWebsocket", default=False,
                     help="Use MQTT over WebSocket")
 parser.add_argument("-pt", "--publish_topic", action="store", dest="publish_topic", default="controlmypi", help="Publish topic")
-parser.add_argument("-st", "--subscribe_topic", action="store", dest="subscribe_topic", default="controlmypi", help="Subscribe Topic")
+parser.add_argument("-st", "--subscribe_topic", action="store", dest="subscribe_topic", default="controlmypi/+/+", help="Subscribe Topic")
 parser.add_argument("-as", "--syncType", action="store", dest="syncType", default="async", help="sync or async")
 
 args = parser.parse_args()
