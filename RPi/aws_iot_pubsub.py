@@ -50,16 +50,20 @@ def sub_callback(client, userdata, message):
 
 	if command == "setgpiolevel":
 		print("Setting pin " + pin + " level to " + msg)
-		if message.payload == "high":
+		if msg == "high":
 			GPIO.output(int(pin), GPIO.HIGH)
+		elif msg == "low":
+			GPIO.output(int(pin), GPIO.LOW)
 		else:
-			GPIO.output(int(pin), GPIO.LOW
+			print("Error setting level...\n")
 	elif command == "setgpiodirection":
 		print("Setting pin " + pin + " direction to " + msg)
-		if message.payload == "output":
+		if msg == "output":
 			GPIO.setup(int(pin), GPIO.OUT)
-		else:
+		elif msg == "input":
 			GPIO.setup(int(pin), GPIO.IN)
+		else:
+			print("Error setting direction...\n")
 	elif command == "readgpiolevel":
 		print("Reading pin " + pin + " level")
 	elif command == "readgpiodirection":
