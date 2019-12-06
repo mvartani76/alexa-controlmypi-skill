@@ -48,7 +48,7 @@ const SetGPIODirectionIntentHandler = {
 
         // Retrieve pin and direction values from slots
         let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
-        let pinDirection = handlerInput.requestEnvelope.request.intent.slots.direction.value;
+        let pinDirection = handlerInput.requestEnvelope.request.intent.slots.pinDirection.value;
         let topic = "controlmypi/setgpiodirection/" + pin;
 
         publishMQTTmsg(iotdata, topic, pinDirection, 0);
