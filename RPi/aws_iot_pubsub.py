@@ -22,6 +22,11 @@ import sys
 import subprocess
 import os
 import socket
+import RPi.GPIO as GPIO
+
+def setup_GPIO():
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
 
 # get the hostname
 hostname = os.uname()[1]
@@ -30,7 +35,7 @@ hostname = os.uname()[1]
 clientId = "controlmypi"
 
 # Set the code version
-aws_iot_code_version = "1.1"
+aws_iot_code_version = "1.2"
 
 # Custom MQTT message callback
 def sub_callback(client, userdata, message):
@@ -40,10 +45,21 @@ def sub_callback(client, userdata, message):
 	command = split_topic[1]
 	pin = split_topic[2]
 
+	# Convert the payload to all lowercase
+	msg = message.payload.lower()
+
 	if command == "setgpiolevel":
-		print("Setting pin " + pin + " level to " + message.payload)
+		print("Setting pin " + pin + " level to " + msg)
+		if message.payload == "high":
+			GPIO.output(int(pin), GPIO.HIGH)
+		else:
+			GPIO.output(int(pin), GPIO.LOW
 	elif command == "setgpiodirection":
-		print("Setting pin " + pin + " direction to " + message.payload)
+		print("Setting pin " + pin + " direction to " + msg)
+		if message.payload == "output":
+			GPIO.setup(int(pin), GPIO.OUT)
+		else:
+			GPIO.setup(int(pin), GPIO.IN)
 	elif command == "readgpiolevel":
 		print("Reading pin " + pin + " level")
 	elif command == "readgpiodirection":
@@ -126,6 +142,9 @@ myAWSIoTMQTTClient.connect()
 print("Connected to AWS IoT...\n")
 
 myAWSIoTMQTTClient.subscribe(subscribe_topic, 1, sub_callback)
+
+# Setup GPIOs
+setup_GPIO()
 
 # Loop forever doing nothing
 while True:
