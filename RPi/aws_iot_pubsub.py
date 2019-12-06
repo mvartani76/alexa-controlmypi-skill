@@ -35,7 +35,7 @@ hostname = os.uname()[1]
 clientId = "controlmypi"
 
 # Set the code version
-aws_iot_code_version = "1.2"
+aws_iot_code_version = "1.3"
 
 # Custom MQTT message callback
 def sub_callback(client, userdata, message):
@@ -66,6 +66,9 @@ def sub_callback(client, userdata, message):
 			print("Error setting direction...\n")
 	elif command == "readgpiolevel":
 		print("Reading pin " + pin + " level")
+		level = GPIO.input(int(pin))
+		topic = "controlmypi/sendgpiolevel/" + pin
+		myAWSIoTMQTTClient.publish(topic, level, 0)
 	elif command == "readgpiodirection":
 		print("Reading pin " + pin + " direction")
 
