@@ -100,6 +100,18 @@ const ReadGPIOLevelIntentHandler = {
         // Send message to pi to send the requested data back
         publishMQTTmsg(iotdata, topic, pin, 0);
 
+        await sleep(1000)
+
+        iotdata.getThingShadow({ thingName: 'ControlMyPi' }, function(err, data) {
+              if (err) {
+                    console.log(err, err.stack);
+                    context.done(err);
+                    return;
+              }
+              var payload = JSON.parse(data.payload);
+              console.log(payload);
+          });
+
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(repromptOutput)
@@ -284,6 +296,11 @@ function publishMQTTmsg(iotdataobj, topic, payload, qos) {
 	});
 }
 
+function sleep(ms) {
+    return new Promise(resolve=>{
+        setTimeout(resolve,ms)
+    })
+}
 
 // The SkillBuilder acts as the entry point for your skill, routing all request and response
 // payloads to the handlers above. Make sure any new handlers or interceptors you've
