@@ -14,6 +14,7 @@
  */
  '''
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
+from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
 import logging
 import time
 import argparse
@@ -67,8 +68,17 @@ def sub_callback(client, userdata, message):
 	elif command == "readgpiolevel":
 		print("Reading pin " + pin + " level")
 		level = GPIO.input(int(pin))
-		topic = "controlmypi/sendgpiolevel/" + pin
-		myAWSIoTMQTTClient.publish(topic, level, 0)
+
+		# MQTT message needs to follow thing shadow format
+		payload = json.dumps({
+			"state":{
+				"reported":{
+					pin:level
+					}
+				}
+		})
+
+		myAWSIoTMQTTClient.publish("$aws/things/ControlMyPi/shadow/update", payload, 0)
 	elif command == "readgpiodirection":
 		print("Reading pin " + pin + " direction")
 
