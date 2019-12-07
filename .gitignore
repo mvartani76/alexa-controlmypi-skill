@@ -64,3 +64,6 @@ typings/
 *.key
 *.crt
 *.pem
+
+# iot sdk directories
+aws-iot-device-sdk-python/
