@@ -1,0 +1,50 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iot:Publish",
+        "iot:Receive"
+      ],
+      "Resource": [
+        "arn:aws:iot:region:account:topic/sdk/test/java",
+        "arn:aws:iot:region:account:topic/sdk/test/Python",
+        "arn:aws:iot:region:account:topic/$aws/things/ControlMyPi/shadow/update",
+        "arn:aws:iot:region:account:topic/controlmypi/*",
+        "arn:aws:iot:region:account:topic/frommypi/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": "iot:UpdateThingShadow",
+      "Resource": [
+        "*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iot:Subscribe"
+      ],
+      "Resource": [
+        "arn:aws:iot:region:account:topicfilter/sdk/test/java",
+        "arn:aws:iot:region:account:topicfilter/sdk/test/Python",
+        "arn:aws:iot:region:account:topicfilter/topic_1",
+        "arn:aws:iot:region:account:topicfilter/controlmypi/*",
+        "arn:aws:iot:region:account:topicfilter/frommypi/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "iot:Connect"
+      ],
+      "Resource": [
+        "arn:aws:iot:region:account:client/sdk-java",
+        "arn:aws:iot:region:account:client/controlmypi*",
+        "arn:aws:iot:region:account:client/sdk-nodejs-*"
+      ]
+    }
+  ]
+}
