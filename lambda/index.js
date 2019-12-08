@@ -5,6 +5,8 @@ const ddbTableName = 'controlmypi-alexa-user-table';
 
 var iotdata = new AWS.IotData({endpoint:process.env.AWS_IOT_ENDPOINT});
 
+const levelObj = {"0": "low", "1": "high"};
+
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
       //console.log(handlerInput.requestEnvelope);
@@ -89,8 +91,10 @@ const ReadGPIOLevelIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'ReadGPIOLevelIntent';
     },
     async handle(handlerInput) {
-        const speakOutput = 'You have triggered the Read GPIO Level Intent.';
+        var speakOutput = '';
         const repromptOutput = 'What would you like to do?';
+        var payload = '';
+        var pinLevel = 'aa';
 
         // Retrieve pin value from slots
         let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
@@ -102,15 +106,10 @@ const ReadGPIOLevelIntentHandler = {
 
         await sleep(1000)
 
-        iotdata.getThingShadow({ thingName: 'ControlMyPi' }, function(err, data) {
-              if (err) {
-                    console.log(err, err.stack);
-                    context.done(err);
-                    return;
-              }
-              var payload = JSON.parse(data.payload);
-              console.log(payload);
-          });
+        // Needed to add promise inside getThingShadow to make it wait to set pinLevel
+        pinLevel = await getThingShadow(iotdata, 'ControlMyPi', payload, pin, pinLevel);
+
+        speakOutput = 'Pin ' + pin + ' is currently set to ' + levelObj[pinLevel];
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -294,6 +293,24 @@ function publishMQTTmsg(iotdataobj, topic, payload, qos) {
 			console.log("success.....");
 		}
 	});
+}
+
+// Method that gets the pin value from the thing. Wrapped a promise to get the code
+// to wait until a value was valid
+function getThingShadow(iotdataobj, myThingName, payload, pin, pinLevel) {
+    return new Promise((resolve,reject) => {
+        iotdata.getThingShadow({ thingName: myThingName }, function(err, data) {
+            if (err) {
+                console.log(err, err.stack);
+                context.done(err);
+                reject(err);
+            }
+            payload = JSON.parse(data.payload);
+
+            pinLevel = payload["state"]["reported"][pin];
+            resolve(pinlevel);
+        });
+    })
 }
 
 function sleep(ms) {
