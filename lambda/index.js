@@ -48,12 +48,24 @@ const SetGPIODirectionIntentHandler = {
         const speakOutput = 'You have triggered the Set GPIO Direction Intent.';
         const repromptOutput = 'What would you like to do?';
 
+        const attributesManager = handlerInput.attributesManager;
+        // Load the values from dynamoDB --> need to have await due to asynchronous operation
+        const sessionAttributes = await attributesManager.getPersistentAttributes() || {};
+        var pins = sessionAttributes.hasOwnProperty('pins') ? sessionAttributes.pins : {};
+
         // Retrieve pin and direction values from slots
         let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
         let pinDirection = handlerInput.requestEnvelope.request.intent.slots.pinDirection.value;
         let topic = "controlmypi/setgpiodirection/" + pin;
 
         publishMQTTmsg(iotdata, topic, pinDirection, 0);
+
+        pins[pin] = {"direction": pinDirection};
+
+        sessionAttributes.pins = pins;
+
+        attributesManager.setPersistentAttributes(sessionAttributes);
+        await attributesManager.savePersistentAttributes();
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
@@ -68,15 +80,28 @@ const SetGPIOLevelIntentHandler = {
             && handlerInput.requestEnvelope.request.intent.name === 'SetGPIOLevelIntent';
     },
     async handle(handlerInput) {
-        const speakOutput = 'You have triggered the Set GPIO Level Intent.';
+        var speakOutput = '';
         const repromptOutput = 'What would you like to do?';
+
+        const attributesManager = handlerInput.attributesManager;
+        // Load the values from dynamoDB --> need to have await due to asynchronous operation
+        const sessionAttributes = await attributesManager.getPersistentAttributes() || {};
+        var pins = sessionAttributes.hasOwnProperty('pins') ? sessionAttributes.pins : {};
+        console.log(pins)
 
         // Retrieve pin and pin level values from slots
         let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
         let pinLevel = handlerInput.requestEnvelope.request.intent.slots.pinLevel.value;
         let topic = "controlmypi/setgpiolevel/" + pin;
 
-        publishMQTTmsg(iotdata, topic, pinLevel, 0);
+        if (typeof pins[pin] !== 'undefined' && pins[pin]) {
+            speakOutput = 'Setting pin ' + pin + ' to ' + pinLevel + '.';
+            publishMQTTmsg(iotdata, topic, pinLevel, 0);
+        } else {
+            speakOutput = 'I am sorry but I cannot set the pin as the direction needs to be set to output. ' +
+                            'If you would like to set the pin direction please say \'Set direction of pin ' + 
+                            pin + ' to output\'';
+        }
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
