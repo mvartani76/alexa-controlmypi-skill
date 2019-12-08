@@ -95,13 +95,21 @@ const SetGPIOLevelIntentHandler = {
         let topic = "controlmypi/setgpiolevel/" + pin;
 
         if (typeof pins[pin] !== 'undefined' && pins[pin]) {
-            speakOutput = 'Setting pin ' + pin + ' to ' + pinLevel + '.';
-            publishMQTTmsg(iotdata, topic, pinLevel, 0);
+            if (pins[pin].direction == 'output') {
+                speakOutput = 'Setting pin ' + pin + ' to ' + pinLevel + '. ';
+                publishMQTTmsg(iotdata, topic, pinLevel, 0);
+            } else {
+                speakOutput = 'I am sorry but I cannot set the pin level to ' + pinLevel + ' as the direction needs ' +
+                                'to be set to output. Pin ' + pin + ' is currently set as an input. If you would like to set ' +
+                                'the pin direction please say \'Set direction of pin ' + pin + ' to output.\' ';
+            }
         } else {
             speakOutput = 'I am sorry but I cannot set the pin as the direction needs to be set to output. ' +
-                            'If you would like to set the pin direction please say \'Set direction of pin ' + 
-                            pin + ' to output\'';
+                            'Pin ' + pin + ' has not been set. If you would like to set the pin direction please ' +
+                            'say \'Set direction of pin ' + pin + ' to output.\' ';
         }
+
+        speakOutput = speakOutput + 'What would you like to do now?';
 
         return handlerInput.responseBuilder
             .speak(speakOutput)
