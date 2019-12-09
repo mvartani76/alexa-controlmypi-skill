@@ -45,9 +45,13 @@ def sub_callback(client, userdata, message):
 	split_topic = message.topic.split('/')
 	command = split_topic[1]
 	pin = split_topic[2]
-
-	# Convert the payload to all lowercase
-	msg = message.payload.lower()
+	print(split_topic)
+	if command != "batchsetgpiolevelsdirections":
+		# Convert the payload to all lowercase
+		msg = message.payload.lower()
+		print("not equal to batchsetgpiolevelsdirections")
+	else:
+		msg = json.loads(message.payload)
 
 	if command == "setgpiolevel":
 		print("Setting pin " + pin + " level to " + msg)
@@ -81,7 +85,27 @@ def sub_callback(client, userdata, message):
 		myAWSIoTMQTTClient.publish("$aws/things/ControlMyPi/shadow/update", payload, 0)
 	elif command == "readgpiodirection":
 		print("Reading pin " + pin + " direction")
-
+	elif command == "batchsetgpiolevelsdirections":
+		print("Setting previously configured pin levels and directions")
+		for pin in msg:
+			dir = msg[pin]["direction"]
+			print(dir)
+			print(dir.lower())
+			if "level" in msg[pin]:
+				print("level found")
+				lvl = msg[pin]["level"]
+			if dir.lower() == "output":
+				GPIO.setup(int(pin), GPIO.OUT)
+				if lvl.lower() == "high":
+					GPIO.output(int(pin), GPIO.HIGH)
+				elif lvl.lower() == "low":
+					GPIO.output(int(pin), GPIO.LOW)
+				else:
+					print("Error in setting level...\n")
+			elif dir.lower() == "input":
+				GPIO.setup(int(pin), GPIO.IN)
+			else:
+				print("Error in setting direction...\n")
 # Custom MQTT Puback callback
 def customPubackCallback(mid):
     print("Received PUBACK packet id: ")
