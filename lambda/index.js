@@ -14,9 +14,39 @@ const LaunchRequestHandler = {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
     async handle(handlerInput) {
-        const speakOutput = 'Hello! Welcome to Control My Pi, the skill that allows you to control your Raspberry Pi Single Board Computer. ';
+        var speakOutput = 'Hello! Welcome to Control My Pi, the skill that allows you to control your Raspberry Pi Single Board Computer. ';
         const repromptText = 'What would you like to do?';
 
+        const attributesManager = handlerInput.attributesManager;
+        // Load the values from dynamoDB --> need to have await due to asynchronous operation
+        const sessionAttributes = await attributesManager.getPersistentAttributes() || {};
+        var pins = sessionAttributes.hasOwnProperty('pins') ? sessionAttributes.pins : {};
+
+        console.log("pins: " + JSON.stringify(pins));
+        // Check if there are any keys in the object
+        count = Object.keys(pins).length;
+        console.log("count: " + count);
+        // Only set the pin configuration if there is something stored in memory
+        // Which we will assume is if there is at least one key stored
+        if (count > 0) {
+            for (var c in pins) {
+                console.log("loop");
+                console.log(c);
+                console.log(pins[c].direction);
+            }
+            //for (i=0;i<count;i++) {
+            //    console.log
+            //}
+
+            // Even though it is not used, for some reason the '/2' needs to be there for it to work?
+            topic = "controlmypi/batchsetgpiolevelsdirections/2";
+            // The payload is the list of pins and the configurations
+            // Raspberry Pi code will loop through and set accordingly
+            publishMQTTmsg(iotdata, topic, JSON.stringify(pins), 0);
+            speakOutput = "we set some pins...";
+        } else {
+            speakOutput = "no pins were set...";
+        }
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(repromptText)
