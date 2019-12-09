@@ -45,11 +45,12 @@ def sub_callback(client, userdata, message):
 	split_topic = message.topic.split('/')
 	command = split_topic[1]
 	pin = split_topic[2]
-	print(split_topic)
+
+    # msg structure dependent on command so need to set accordingly
+    # as payload coming in differently for different topics
 	if command != "batchsetgpiolevelsdirections":
 		# Convert the payload to all lowercase
 		msg = message.payload.lower()
-		print("not equal to batchsetgpiolevelsdirections")
 	else:
 		msg = json.loads(message.payload)
 
@@ -88,21 +89,21 @@ def sub_callback(client, userdata, message):
 	elif command == "batchsetgpiolevelsdirections":
 		print("Setting previously configured pin levels and directions")
 		for pin in msg:
-			dir = msg[pin]["direction"]
-			print(dir)
-			print(dir.lower())
-			if "level" in msg[pin]:
-				print("level found")
-				lvl = msg[pin]["level"]
-			if dir.lower() == "output":
+			dir = msg[pin]["direction"].lower()
+			if dir == "output":
+                # Set the direction of pin to output
 				GPIO.setup(int(pin), GPIO.OUT)
-				if lvl.lower() == "high":
-					GPIO.output(int(pin), GPIO.HIGH)
-				elif lvl.lower() == "low":
-					GPIO.output(int(pin), GPIO.LOW)
-				else:
-					print("Error in setting level...\n")
-			elif dir.lower() == "input":
+                # Check if level is found before trying to set
+                if "level" in msg[pin]:
+                    print("level found")
+                    lvl = msg[pin]["level"].lower()
+					if lvl == "high":
+    					GPIO.output(int(pin), GPIO.HIGH)
+    				elif lvl == "low":
+    					GPIO.output(int(pin), GPIO.LOW)
+    				else:
+    					print("Error in setting level...\n")
+			elif dir == "input":
 				GPIO.setup(int(pin), GPIO.IN)
 			else:
 				print("Error in setting direction...\n")
