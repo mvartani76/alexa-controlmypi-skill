@@ -91,18 +91,18 @@ def sub_callback(client, userdata, message):
 		for pin in msg:
 			dir = msg[pin]["direction"].lower()
 			if dir == "output":
-                # Set the direction of pin to output
+				# Set the direction of pin to output
 				GPIO.setup(int(pin), GPIO.OUT)
-                # Check if level is found before trying to set
-                if "level" in msg[pin]:
-                    print("level found")
-                    lvl = msg[pin]["level"].lower()
+				# Check if level is found before trying to set
+				if "level" in msg[pin]:
+					print("level found")
+					lvl = msg[pin]["level"].lower()
 					if lvl == "high":
-    					GPIO.output(int(pin), GPIO.HIGH)
-    				elif lvl == "low":
-    					GPIO.output(int(pin), GPIO.LOW)
-    				else:
-    					print("Error in setting level...\n")
+						GPIO.output(int(pin), GPIO.HIGH)
+					elif lvl == "low":
+						GPIO.output(int(pin), GPIO.LOW)
+					else:
+						print("Error in setting level...\n")
 			elif dir == "input":
 				GPIO.setup(int(pin), GPIO.IN)
 			else:
