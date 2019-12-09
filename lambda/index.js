@@ -126,24 +126,36 @@ const ReadGPIOLevelIntentHandler = {
     async handle(handlerInput) {
         var speakOutput = '';
         const repromptOutput = 'What would you like to do?';
+
+        const attributesManager = handlerInput.attributesManager;
+        // Load the values from dynamoDB --> need to have await due to asynchronous operation
+        const sessionAttributes = await attributesManager.getPersistentAttributes() || {};
+        var pins = sessionAttributes.hasOwnProperty('pins') ? sessionAttributes.pins : {};
+
         var payload = '';
-        var pinLevel = 'aa';
+        var pinLevel = '';
 
         // Retrieve pin value from slots
         let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
 
         let topic = "controlmypi/readgpiolevel/" + pin;
 
-        // Send message to pi to send the requested data back
-        publishMQTTmsg(iotdata, topic, pin, 0);
+        if (typeof pins[pin] !== 'undefined' && pins[pin]) {
 
-        await sleep(1000)
+            // Send message to pi to send the requested data back
+            publishMQTTmsg(iotdata, topic, pin, 0);
 
-        // Needed to add promise inside getThingShadow to make it wait to set pinLevel
-        pinLevel = await getThingShadow(iotdata, 'ControlMyPi', payload, pin, pinLevel);
+            // Sleeping for 1000ms to make sure that shadow is updated before trying to read it
+            await sleep(1000)
 
-        speakOutput = 'Pin ' + pin + ' is currently set to ' + levelObj[pinLevel];
+            // Needed to add promise inside getThingShadow to make it wait to set pinLevel
+            pinLevel = await getThingShadow(iotdata, 'ControlMyPi', payload, pin, pinLevel);
 
+            speakOutput = 'Pin ' + pin + ' is currently set to ' + levelObj[pinLevel];
+        } else {
+            speakOutput = 'I am sorry but I cannot read the pin as the direction needs to be set. ' +
+                            'Pin ' + pin + ' has not been set.';
+        }
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(repromptOutput)
@@ -341,7 +353,7 @@ function getThingShadow(iotdataobj, myThingName, payload, pin, pinLevel) {
             payload = JSON.parse(data.payload);
 
             pinLevel = payload["state"]["reported"][pin];
-            resolve(pinlevel);
+            resolve(pinLevel);
         });
     })
 }
