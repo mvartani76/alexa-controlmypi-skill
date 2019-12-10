@@ -34,7 +34,7 @@ const LaunchRequestHandler = {
         // Get the current time from Lambda to compare to what is returned from device shadow
         let currentTime = Math.floor(new Date() / 1000);
         // We first need to check if raspberry pi code is running
-        returnedTime = await getThingShadow(iotdata, 'ControlMyPi', payload, 52342342, returnedTime, "timestamp");
+        returnedTime = await getThingShadow(iotdata, 'ControlMyPi', payload, "timestamp", "timestamp");
 
         let timeDifference = Math.abs(returnedTime - currentTime);
 
@@ -193,7 +193,7 @@ const ReadGPIOLevelIntentHandler = {
             await sleep(1000)
 
             // Needed to add promise inside getThingShadow to make it wait to set pinLevel
-            pinLevel = await getThingShadow(iotdata, 'ControlMyPi', payload, pin, pinLevel, "pinLevel");
+            pinLevel = await getThingShadow(iotdata, 'ControlMyPi', payload, pin, "pinLevel");
 
             speakOutput = 'Pin ' + pin + ' is currently set to ' + levelObj[pinLevel];
         } else {
@@ -388,8 +388,9 @@ function publishMQTTmsg(iotdataobj, topic, payload, qos) {
 // to wait until a value was valid
 // Currently input is either pin# or timestamp
 // outputSwitch is either "pinLevel" or "timestamp"
-function getThingShadow(iotdataobj, myThingName, payload, input, output, outputSwitch) {
+function getThingShadow(iotdataobj, myThingName, payload, input, outputSwitch) {
     return new Promise((resolve,reject) => {
+        var output = '';
         iotdata.getThingShadow({ thingName: myThingName }, function(err, data) {
             if (err) {
                 console.log(err, err.stack);
@@ -400,7 +401,7 @@ function getThingShadow(iotdataobj, myThingName, payload, input, output, outputS
             if (outputSwitch == "pinLevel") {
                 output = payload["state"]["reported"][input];
             } else {
-                output = payload["state"]["reported"]["timestamp"];
+                output = payload["state"]["reported"][input];
                 console.log("input: " + input);
                 console.log("output: " + output);
             }
