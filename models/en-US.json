@@ -88,6 +88,23 @@
                         "what is {gpio} {number} set to",
                         "what is the level of {gpio} {number}"
                     ]
+                },
+                {
+                    "name": "ReadGPIODirectionIntent",
+                    "slots": [
+                        {
+                            "name": "number",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "gpio",
+                            "type": "GPIONames"
+                        }
+                    ],
+                    "samples": [
+                        "what is {gpio} {number} direction",
+                        "what is the direction of {gpio} {number}"
+                    ]
                 }
             ],
             "types": [
@@ -126,74 +143,71 @@
                     "values": [
                         {
                             "name": {
-                                "value": "Raspberry Pi 1 Model A+",
+                                "value": "Raspberry Pie One Model A+",
                                 "synonyms": [
-                                    "Raspberry Pi 1 Model A Plus"
+                                    "Raspberry Pie One Model A Plus"
                                 ]
                             }
                         },
                         {
                             "name": {
-                                "value": "Raspberry Pi 1 Model B+",
+                                "value": "Raspberry Pie One Model B+",
                                 "synonyms": [
-                                    "Raspberry Pi 1 Model B Plus"
+                                    "Raspberry Pie One Model B Plus"
                                 ]
                             }
                         },
                         {
                             "name": {
-                                "value": "Raspberry Pi 1 Model A"
+                                "value": "Raspberry Pie One Model A"
                             }
                         },
                         {
                             "name": {
-                                "value": "Raspberry Pi 1 Model B"
+                                "value": "Raspberry Pie One Model B"
                             }
                         },
                         {
                             "name": {
-                                "value": "Raspberry Pi 2 Model B",
+                                "value": "Raspberry Pie Two Model B"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pie Zero"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pie Zero W"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pie Three Model B"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Raspberry Pie Three Model A+",
                                 "synonyms": [
-                                    "Raspberry Pi 2"
+                                    "Raspberry Pi Three Model A Plus"
                                 ]
                             }
                         },
                         {
                             "name": {
-                                "value": "Raspberry Pi Zero"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "Raspberry Pi Zero W"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "Raspberry Pi 3 Model B"
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "Raspberry Pi 3 Model A+",
+                                "value": "Raspberry Pie Three Model B+",
                                 "synonyms": [
-                                    "Raspberry Pi 3 Model A Plus"
+                                    "Raspberry Pie Three Model B Plus"
                                 ]
                             }
                         },
                         {
                             "name": {
-                                "value": "Raspberry Pi 3 Model B+",
+                                "value": "Raspberry Pie Four Model B",
                                 "synonyms": [
-                                    "Raspberry Pi 3 Model B Plus"
-                                ]
-                            }
-                        },
-                        {
-                            "name": {
-                                "value": "Raspberry Pi 4 Model B",
-                                "synonyms": [
-                                    "Raspberry Pi 4"
+                                    "Raspberry Pie Four"
                                 ]
                             }
                         }
