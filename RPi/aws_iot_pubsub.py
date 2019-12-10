@@ -107,6 +107,18 @@ def sub_callback(client, userdata, message):
 				GPIO.setup(int(pin), GPIO.IN)
 			else:
 				print("Error in setting direction...\n")
+	elif command == "heartbeat":
+		print("Enter heartbeat...\n")
+		# MQTT message needs to follow thing shadow format
+		payload = json.dumps({
+			"state":{
+				"reported":{
+					"timestamp":int(time.time())
+					}
+				}
+		})
+
+		myAWSIoTMQTTClient.publish("$aws/things/ControlMyPi/shadow/update", payload, 0)
 # Custom MQTT Puback callback
 def customPubackCallback(mid):
     print("Received PUBACK packet id: ")
