@@ -1,6 +1,6 @@
 # alexa-controlmypi-skill
 Repository for all code needed to build/handle alexa skill that controls GPIOs on Raspberry Pi
-![alt text](https://github.com/mvartani76/alexa-controlmypi-skill/tree/master/images/system_block_diagram.png "Control My Pi System Block Diagram")
+![Block Diagram](/images/system_block_diagram.png)
 ## RPi
 This directory contains the code to run on the Raspberry Pi that utilizes the Python AWS SDK to subscribe to topics and, when called, it publishes to a reserved MQTT topic to update the device shadow.
 ## Models
