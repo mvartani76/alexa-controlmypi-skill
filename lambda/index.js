@@ -9,8 +9,6 @@ const levelObj = {"0": "low", "1": "high"};
 
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
-      //console.log(handlerInput.requestEnvelope);
-        //return Alexa.getRequestType(handlerInput.requestEnvelope) === 'LaunchRequest';
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
     },
     async handle(handlerInput) {
