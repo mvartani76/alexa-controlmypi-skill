@@ -22,21 +22,45 @@ const LaunchRequestHandler = {
         const sessionAttributes = await attributesManager.getPersistentAttributes() || {};
         var pins = sessionAttributes.hasOwnProperty('pins') ? sessionAttributes.pins : {};
 
-        // Check if there are any keys in the object
-        count = Object.keys(pins).length;
+        var payload = '';
+        var returnedTime = '';
 
-        // Only set the pin configuration if there is something stored in memory
-        // Which we will assume is if there is at least one key stored
-        if (count > 0) {
-            // Even though it is not used, for some reason the '/2' needs to be there for it to work?
-            topic = "controlmypi/batchsetgpiolevelsdirections/2";
-            // The payload is the list of pins and the configurations
-            // Raspberry Pi code will loop through and set accordingly
-            publishMQTTmsg(iotdata, topic, JSON.stringify(pins), 0);
-            speakOutput = speakOutput + 'We noticed that you have previously set some values so we configured your Raspberry Pi ' +
-                                        'as you previously had it set up. What would you like to do?';
+        let topic = "controlmypi/heartbeat/" + 2;
+
+        // Send message to pi to send the requested data back
+        publishMQTTmsg(iotdata, topic, "2", 0);
+
+        // Sleeping for 1000ms to make sure that shadow is updated before trying to read it
+        await sleep(1000)
+
+        // Get the current time from Lambda to compare to what is returned from device shadow
+        let currentTime = Math.floor(new Date() / 1000);
+        // We first need to check if raspberry pi code is running
+        returnedTime = await getThingShadow(iotdata, 'ControlMyPi', payload, 52342342, returnedTime, "timestamp");
+
+        let timeDifference = Math.abs(returnedTime - currentTime);
+
+        // If the code is running we should get a timestamp from the shadow that is within a certain treshold of time
+        if (timeDifference < 30) {
+            // Check if there are any keys in the object
+            count = Object.keys(pins).length;
+
+            // Only set the pin configuration if there is something stored in memory
+            // Which we will assume is if there is at least one key stored
+            if (count > 0) {
+                // Even though it is not used, for some reason the '/2' needs to be there for it to work?
+                topic = "controlmypi/batchsetgpiolevelsdirections/2";
+                // The payload is the list of pins and the configurations
+                // Raspberry Pi code will loop through and set accordingly
+                publishMQTTmsg(iotdata, topic, JSON.stringify(pins), 0);
+                speakOutput = speakOutput + 'We noticed that you have previously set some values so we configured your Raspberry Pi ' +
+                                            'as you previously had it set up. What would you like to do?';
+            } else {
+                speakOutput = speakOutput + 'No pins have been configured. What would you like to do?';
+            }
         } else {
-            speakOutput = speakOutput + 'No pins have been configured. What would you like to do?';
+            speakOutput = speakOutput + 'It appears that the code on the Raspberry Pi is currently not running. Please make sure ' +
+                            'that this code is running.';
         }
 
         return handlerInput.responseBuilder
@@ -171,7 +195,7 @@ const ReadGPIOLevelIntentHandler = {
             await sleep(1000)
 
             // Needed to add promise inside getThingShadow to make it wait to set pinLevel
-            pinLevel = await getThingShadow(iotdata, 'ControlMyPi', payload, pin, pinLevel);
+            pinLevel = await getThingShadow(iotdata, 'ControlMyPi', payload, pin, pinLevel, "pinLevel");
 
             speakOutput = 'Pin ' + pin + ' is currently set to ' + levelObj[pinLevel];
         } else {
@@ -364,7 +388,9 @@ function publishMQTTmsg(iotdataobj, topic, payload, qos) {
 
 // Method that gets the pin value from the thing. Wrapped a promise to get the code
 // to wait until a value was valid
-function getThingShadow(iotdataobj, myThingName, payload, pin, pinLevel) {
+// Currently input is either pin# or timestamp
+// outputSwitch is either "pinLevel" or "timestamp"
+function getThingShadow(iotdataobj, myThingName, payload, input, output, outputSwitch) {
     return new Promise((resolve,reject) => {
         iotdata.getThingShadow({ thingName: myThingName }, function(err, data) {
             if (err) {
@@ -373,9 +399,14 @@ function getThingShadow(iotdataobj, myThingName, payload, pin, pinLevel) {
                 reject(err);
             }
             payload = JSON.parse(data.payload);
-
-            pinLevel = payload["state"]["reported"][pin];
-            resolve(pinLevel);
+            if (outputSwitch == "pinLevel") {
+                output = payload["state"]["reported"][input];
+            } else {
+                output = payload["state"]["reported"]["timestamp"];
+                console.log("input: " + input);
+                console.log("output: " + output);
+            }
+            resolve(output);
         });
     })
 }
