@@ -7,6 +7,8 @@ var iotdata = new AWS.IotData({endpoint:process.env.AWS_IOT_ENDPOINT});
 
 const levelObj = {"0": "low", "1": "high"};
 
+const device_hostname = "cmp1";
+
 const LaunchRequestHandler = {
     canHandle(handlerInput) {
         return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
@@ -23,7 +25,7 @@ const LaunchRequestHandler = {
         var payload = '';
         var returnedTime = '';
 
-        let topic = "controlmypi/heartbeat/" + 2;
+        let topic = "controlmypi/" + device_hostname + "/heartbeat/" + 2;
 
         // Send message to pi to send the requested data back
         publishMQTTmsg(iotdata, topic, "2", 0);
@@ -47,7 +49,7 @@ const LaunchRequestHandler = {
             // Which we will assume is if there is at least one key stored
             if (count > 0) {
                 // Even though it is not used, for some reason the '/2' needs to be there for it to work?
-                topic = "controlmypi/batchsetgpiolevelsdirections/2";
+                topic = "controlmypi/" + device_hostname + "/batchsetgpiolevelsdirections/2";
                 // The payload is the list of pins and the configurations
                 // Raspberry Pi code will loop through and set accordingly
                 publishMQTTmsg(iotdata, topic, JSON.stringify(pins), 0);
@@ -100,7 +102,7 @@ const SetGPIODirectionIntentHandler = {
         // Retrieve pin and direction values from slots
         let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
         let pinDirection = handlerInput.requestEnvelope.request.intent.slots.pinDirection.value;
-        let topic = "controlmypi/setgpiodirection/" + pin;
+        let topic = "controlmypi/" + device_hostname + "/setgpiodirection/" + pin;
 
         publishMQTTmsg(iotdata, topic, pinDirection, 0);
 
@@ -136,7 +138,7 @@ const SetGPIOLevelIntentHandler = {
         // Retrieve pin and pin level values from slots
         let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
         let pinLevel = handlerInput.requestEnvelope.request.intent.slots.pinLevel.value;
-        let topic = "controlmypi/setgpiolevel/" + pin;
+        let topic = "controlmypi/" + device_hostname + "/setgpiolevel/" + pin;
 
         if (typeof pins[pin] !== 'undefined' && pins[pin]) {
             if (pins[pin].direction == 'output') {
@@ -182,7 +184,7 @@ const ReadGPIOLevelIntentHandler = {
         // Retrieve pin value from slots
         let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
 
-        let topic = "controlmypi/readgpiolevel/" + pin;
+        let topic = "controlmypi/" + device_hostname + "/readgpiolevel/" + pin;
 
         if (typeof pins[pin] !== 'undefined' && pins[pin]) {
 
@@ -222,7 +224,7 @@ const ReadGPIODirectionIntentHandler = {
         // Retrieve pin value from slots
         let pin = handlerInput.requestEnvelope.request.intent.slots.number.value;
 
-        let topic = "controlmypi/readgpiodirection/" + pin;
+        let topic = "controlmypi/" + device_hostname + "/readgpiodirection/" + pin;
 
         // Send message to pi to send the requested data back
         publishMQTTmsg(iotdata, topic, pin, 0);
