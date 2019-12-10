@@ -200,6 +200,9 @@ const ReadGPIOLevelIntentHandler = {
             speakOutput = 'I am sorry but I cannot read the pin as the direction needs to be set. ' +
                             'Pin ' + pin + ' has not been set.';
         }
+
+        speakOutput = speakOutput + 'What would you like to do now?';
+
         return handlerInput.responseBuilder
             .speak(speakOutput)
             .reprompt(repromptOutput)
