@@ -14,7 +14,6 @@
  */
  '''
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
-from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
 import logging
 import time
 import argparse
@@ -36,15 +35,16 @@ hostname = os.uname()[1]
 clientId = "controlmypi"
 
 # Set the code version
-aws_iot_code_version = "1.3"
+aws_iot_code_version = "1.4"
 
 # Custom MQTT message callback
 def sub_callback(client, userdata, message):
 
-	# The topic contains command and pin so we need to split out
+	# The topic contains hostname, command, and pin so we need to split out
 	split_topic = message.topic.split('/')
-	command = split_topic[1]
-	pin = split_topic[2]
+	host_name = split_topic[1]
+	command = split_topic[2]
+	pin = split_topic[3]
 
     # msg structure dependent on command so need to set accordingly
     # as payload coming in differently for different topics
@@ -135,7 +135,7 @@ parser.add_argument("-p", "--port", action="store", dest="port", type=int, help=
 parser.add_argument("-w", "--websocket", action="store_true", dest="useWebsocket", default=False,
                     help="Use MQTT over WebSocket")
 parser.add_argument("-pt", "--publish_topic", action="store", dest="publish_topic", default="controlmypi", help="Publish topic")
-parser.add_argument("-st", "--subscribe_topic", action="store", dest="subscribe_topic", default="controlmypi/+/+", help="Subscribe Topic")
+parser.add_argument("-st", "--subscribe_topic", action="store", dest="subscribe_topic", default="controlmypi/#", help="Subscribe Topic")
 parser.add_argument("-as", "--syncType", action="store", dest="syncType", default="async", help="sync or async")
 
 args = parser.parse_args()
