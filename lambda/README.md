@@ -6,7 +6,10 @@
 ![Create Lambda](/images/lambda-create-function.png)
 
 ### 2. Author from scratch
-![Lambda Dunction Details](/images/lambda-create-function-details.png)
+![Lambda Function Details](/images/lambda-create-function-details.png)
 
 ## Add Layer
 In order to include the dependencies, we need to include these packages. The necessary packages are included in nodejs.zip.
+
+### Details for Layer
+![Lambda Layer Details](/images/lambda-layer-details.png)
