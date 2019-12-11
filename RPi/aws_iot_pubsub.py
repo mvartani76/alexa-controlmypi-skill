@@ -14,7 +14,6 @@
  */
  '''
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
-from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTShadowClient
 import logging
 import time
 import argparse
@@ -36,23 +35,24 @@ hostname = os.uname()[1]
 clientId = "controlmypi"
 
 # Set the code version
-aws_iot_code_version = "1.3"
+aws_iot_code_version = "1.4"
 
 # Custom MQTT message callback
 def sub_callback(client, userdata, message):
-
-	# The topic contains command and pin so we need to split out
+	print(message.topic)
+	# The topic contains hostname, command, and pin so we need to split out
 	split_topic = message.topic.split('/')
-	command = split_topic[1]
-	pin = split_topic[2]
-
+	host_name = split_topic[1]
+	command = split_topic[2]
+	pin = split_topic[3]
+	print(split_topic)
     # msg structure dependent on command so need to set accordingly
     # as payload coming in differently for different topics
-	if command != "batchsetgpiolevelsdirections":
+	if (command == "batchsetgpiolevelsdirections") or (command == "readipaddress"):
+		msg = json.loads(message.payload)
+	else:
 		# Convert the payload to all lowercase
 		msg = message.payload.lower()
-	else:
-		msg = json.loads(message.payload)
 
 	if command == "setgpiolevel":
 		print("Setting pin " + pin + " level to " + msg)
@@ -119,11 +119,26 @@ def sub_callback(client, userdata, message):
 		})
 
 		myAWSIoTMQTTClient.publish("$aws/things/ControlMyPi/shadow/update", payload, 0)
+	elif command == "getipaddress":
+		print("Retrieving ip address...\n")
+		ip_addr = get_ip_addr()
+		print("ip address = " + ip_addr)
+		topic = "controlmypi/" + hostname + "/publishipaddr/1"
+		myAWSIoTMQTTClient.publish(topic, ip_addr, 0)
+
 # Custom MQTT Puback callback
 def customPubackCallback(mid):
     print("Received PUBACK packet id: ")
     print(mid)
     print("++++++++++++++\n\n")
+
+# function to get the ip address
+def get_ip_addr():
+	try:
+		ip_addr = (([ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith("127.")] or [[(s.connect(("8.8.8.8", 53)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]]) + ["no IP found"])[0]
+	except:
+		ip_addr = "0.0.0.0"
+	return ip_addr
 
 # Read in command-line parameters
 parser = argparse.ArgumentParser()
@@ -135,7 +150,7 @@ parser.add_argument("-p", "--port", action="store", dest="port", type=int, help=
 parser.add_argument("-w", "--websocket", action="store_true", dest="useWebsocket", default=False,
                     help="Use MQTT over WebSocket")
 parser.add_argument("-pt", "--publish_topic", action="store", dest="publish_topic", default="controlmypi", help="Publish topic")
-parser.add_argument("-st", "--subscribe_topic", action="store", dest="subscribe_topic", default="controlmypi/+/+", help="Subscribe Topic")
+parser.add_argument("-st", "--subscribe_topic", action="store", dest="subscribe_topic", default="controlmypi/#", help="Subscribe Topic")
 parser.add_argument("-as", "--syncType", action="store", dest="syncType", default="async", help="sync or async")
 
 args = parser.parse_args()
