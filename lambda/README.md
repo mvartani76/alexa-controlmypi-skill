@@ -13,3 +13,8 @@ In order to include the dependencies, we need to include these packages. The nec
 
 ### Details for Layer
 ![Lambda Layer Details](/images/lambda-layer-details.png)
+
+## Copy and paste code into AWS editor
+We need to paste the index.js code from this repository into the AWS Lambde IDE as shown below.
+
+There are probably more elegant ways to do this manual process but this works for now.
