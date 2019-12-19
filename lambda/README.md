@@ -20,3 +20,10 @@ We need to paste the index.js code from this repository into the AWS Lambda IDE 
 ![Copy Lambda Code](/images/lambda-paste-code.png)
 
 There are probably more elegant ways to do this manual process but this works for now.
+
+## Add Your Endpoint to Environment Variable
+In order for our Lambda function to access AWS IoT, we need to add our endpoint to the environment variable, AWS_IOT_ENDPOINT, as shown below.
+
+![Add AWS_IOT_ENDPOINT environment variable](/images/lambda-set-environment-variable.png)
+
+Environment variables are accessed in the code prefaced by ```process.env.```
