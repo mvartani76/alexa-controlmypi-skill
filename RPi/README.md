@@ -3,6 +3,8 @@ The Python code running on the Raspberry Pi utilizes the AWS SDK to communicate 
 1. Onboard The Device
 2. Upload credentials to Raspberry Pi
 3. Modify ```start.sh``` script to run the correct code
+4. Run the start.sh script
+5. Verify commands
 
 ## Onboard the Device
 ![Onboarding 1](/images/aws-iot-onboard-device-1.png)
@@ -43,3 +45,14 @@ We run the script by executing the following code.
 If everything is working correctly, we should see the following output on the Rapsberry Pi.
 
 ![RPi Output](/images/rpi-code-startup.png)
+
+## Verify Commands
+If the RPi is running correctly, we should see the following after initiating the following commands.
+
+```set direction of pin 18 to output```
+
+![RPi Output](/images/rpi-code-direction.png)
+
+```set pin 18 to high```
+
+![RPi Output](/images/rpi-code-level.png)
