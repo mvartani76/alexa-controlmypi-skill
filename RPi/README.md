@@ -51,8 +51,8 @@ If the RPi is running correctly, we should see the following after initiating th
 
 ```set direction of pin 18 to output```
 
-![RPi Output](/images/rpi-code-direction.png)
+![RPi Output](/images/rpi-code-set-direction.png)
 
 ```set pin 18 to high```
 
-![RPi Output](/images/rpi-code-level.png)
+![RPi Output](/images/rpi-code-set-level.png)
