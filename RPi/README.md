@@ -37,5 +37,9 @@ As mentioned in the final step of the onboarding process, you will need to add e
 ```chmod +x start.sh```
 
 ## Run the start.sh script
-We run the script by doing the following.
+We run the script by executing the following code.
 ```./start.sh```
+
+If everything is working correctly, we should see the following output on the Rapsberry Pi.
+
+![RPi Output](/images/rpi-code-startup.png)
