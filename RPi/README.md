@@ -32,3 +32,10 @@ The script file launches example code from the SDK as shown below.
 We need to replace the example code with the code in this directory as shown below.
 
 ```python aws_iot_pubsub.py -e <your-aws-iot-endpoint>.amazonaws.com -r root-CA.crt -c ControlMyPi.cert.pem -k ControlMyPi.private.key```
+
+As mentioned in the final step of the onboarding process, you will need to add execution permissions to start.sh as shown below
+```chmod +x start.sh```
+
+## Run the start.sh script
+We run the script by doing the following.
+```./start.sh```
