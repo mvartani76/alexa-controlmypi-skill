@@ -2,9 +2,10 @@
 The Python code running on the Raspberry Pi utilizes the AWS SDK to communicate with AWS IoT. The code simply subscribes to topics and will publish to specific topics if receiving specific commands. In order to get this code correctly running on the Raspberry Pi, you will need to do the following:
 1. Onboard The Device
 2. Upload credentials to Raspberry Pi
-3. Modify ```start.sh``` script to run the correct code
-4. Run the start.sh script
-5. Verify commands
+3. Ensure correct policy permissions
+4. Modify ```start.sh``` script to run the correct code
+5. Run the start.sh script
+6. Verify commands
 
 ## Onboard the Device
 ![Onboarding 1](/images/aws-iot-onboard-device-1.png)
@@ -25,6 +26,9 @@ As mentioned in the previous step, the onboarding device process creates a set o
 - ControlMyPi.private.key
 - ControlMyPi.public.key
 - start.sh
+
+## Ensure Correct Policy Permissions
+In order for the MQTT messages to be correctly sent and received, we need to make sure that the AWS actions/resources have the correct permissions.
 
 ## Modify start.sh script to run the correct code
 The script file launches example code from the SDK as shown below.
