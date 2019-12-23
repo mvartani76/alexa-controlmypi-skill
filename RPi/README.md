@@ -28,7 +28,7 @@ As mentioned in the previous step, the onboarding device process creates a set o
 - start.sh
 
 ## Ensure Correct Policy Permissions
-In order for the MQTT messages to be correctly sent and received, we need to make sure that the AWS actions/resources have the correct permissions.
+In order for the MQTT messages to be correctly sent and received, we need to make sure that the AWS actions/resources have the correct permissions. Update the provided ControlMyPi-Policy.json with your specific region and account and paste into the policy document under AWS->Manage->Things-><YourThingName>->Security-><YourCertificate#>->Policies-><YourPolicyName>
 
 ## Modify start.sh script to run the correct code
 The script file launches example code from the SDK as shown below.
